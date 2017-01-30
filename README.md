@@ -1,7 +1,7 @@
-Instructions:
+## Instructions:
 
-* Clone this repo.
+Clone this repo.
 
-* Run:
+Run:
 
-mvn exec:java -Dexec.mainClass="TicTackToe"
+> mvn exec:java -Dexec.mainClass="TicTacToe"
