@@ -143,16 +143,6 @@
                             <suffixes>(?&lt;!Integration)(Test|Spec)</suffixes>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>integration-test</id>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <phase>integration-test</phase>
-                        <configuration>
-                            <suffixes>(?&lt;=Integration)(Test|Spec)</suffixes>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
         </plugins>

@@ -12,6 +12,8 @@ object BoardStatus extends Enumeration {
   * Tic Tack Toe REPL. Loop until the game is over.
   */
 object TicTackToe {
+  import BoardStatus._
+
   type Player = Char
   val HumanPlayer = 'X'
   val ComputerPlayer = 'O'
@@ -24,7 +26,7 @@ object TicTackToe {
 
     println("Starting...")
 
-    while (board.getBoardStatus() == BoardStatus.InProgress) {
+    while (board.getBoardStatus() == InProgress) {
       var humanMoveError: Option[String] = None
       do {
         println("Enter your move: ")
@@ -34,12 +36,11 @@ object TicTackToe {
         humanMoveError.foreach { error => println(error) }
       } while (humanMoveError.isDefined)
 
-      val move = humanMoveStr.toInt
+      val move = humanMoveStr.toInt - 1
 
-      println(s"You entered: $move")
       board.place(HumanPlayer, move)
 
-      if (board.getBoardStatus() == BoardStatus.InProgress) {
+      if (board.getBoardStatus() == InProgress) {
         board.smarterComputerPlace(ComputerPlayer, HumanPlayer)
       }
       board.print()
@@ -69,23 +70,23 @@ object Board {
   }
 }
 
-class Board(boardData: Array[Cell]) {
+class Board(cells: Array[Cell]) {
   import TicTackToe._
-  val WinningCombinations = List((0,1,2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8), (0,4,8), (2,4,6))
+  val WinningCombinations = List((0,1,2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8), (2,4,6), (0,4,8))
 
   def place(value: Char, move: Int): Unit = {
-    boardData(move) = Cell(value)
+    cells(move) = Cell(value)
   }
 
   def isFree(move: Int): Boolean = {
-    boardData(move).value.equals(NoPlayer)
+    cells(move).value.equals(NoPlayer)
   }
 
   def isWinner(player: Player): Boolean = {
     WinningCombinations.exists{ case(cell1, cell2, cell3) =>
-        boardData(cell1).value == player &&
-        boardData(cell2).value == player &&
-        boardData(cell3).value == player
+        cells(cell1).value == player &&
+        cells(cell2).value == player &&
+        cells(cell3).value == player
     }
   }
 
@@ -97,7 +98,7 @@ class Board(boardData: Array[Cell]) {
     } else {
 
       // No winner? Make sure the board isn't full (in which case it's a tie).
-      val nonEmptySpots = boardData.map { cell =>
+      val nonEmptySpots = cells.map { cell =>
         if (!cell.isEmpty()) 0 else 1
       }.sum
 
@@ -111,7 +112,7 @@ class Board(boardData: Array[Cell]) {
 
   def print() = {
     println(
-      boardData.grouped(3).map { row =>
+      cells.grouped(3).map { row =>
         row.mkString(" | ")
       }.mkString("\n----------\n")
     )
@@ -123,7 +124,7 @@ class Board(boardData: Array[Cell]) {
   def randomComputerPlace(player: Player): Unit ={
     var done = false
     while (!done) {
-      val move = Random.nextInt(6)
+      val move = Random.nextInt(cells.size)
       if (isFree(move)){
         place(player, move)
         done = true
@@ -135,6 +136,7 @@ class Board(boardData: Array[Cell]) {
     * Smarter computer logic.
     *
     * Rules:
+    *   Place winning move if possible (TODO)
     *   Block if needed
     *   Place in the middle if available (TODO)
     *   Place in a corner if available (and middle taken) (TODO)
@@ -156,19 +158,19 @@ class Board(boardData: Array[Cell]) {
   private def needsBlock(opponent: Player): Option[Int] = {
     val possibilities =
       WinningCombinations.flatMap { case(cell1, cell2, cell3) =>
-        if (boardData(cell1).value == opponent &&
-            boardData(cell2).value == opponent &&
-            boardData(cell3).value == NoPlayer){
+        if (cells(cell1).value == opponent &&
+            cells(cell2).value == opponent &&
+            cells(cell3).value == NoPlayer){
           Some(cell3)
 
-        } else if (boardData(cell1).value == opponent &&
-                   boardData(cell2).value == NoPlayer &&
-                   boardData(cell3).value == opponent) {
+        } else if (cells(cell1).value == opponent &&
+                   cells(cell2).value == NoPlayer &&
+                   cells(cell3).value == opponent) {
           Some(cell2)
 
-        } else if (boardData(cell1).value == NoPlayer &&
-                    boardData(cell2).value == opponent &&
-                    boardData(cell3).value == opponent) {
+        } else if (cells(cell1).value == NoPlayer &&
+                    cells(cell2).value == opponent &&
+                    cells(cell3).value == opponent) {
           Some(cell1)
         } else {
           None
@@ -182,8 +184,8 @@ class Board(boardData: Array[Cell]) {
   def getMoveError(moveStr: String): Option[String] = {
     try {
       val move = moveStr.toInt
-      if (move < 0 || move > 8){
-        Some("Move must be 0 through 8!")
+      if (move < 1 || move > 9){
+        Some("Move must be 1 through 9!")
       } else if (!isFree(move)){
         Some("Spot contains a move!")
       } else {
