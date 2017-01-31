@@ -11,7 +11,7 @@ object BoardStatus extends Enumeration {
 /**
   * Tic Tack Toe REPL. Loop until the game is over.
   */
-object TicTackToe {
+object TicTacToe {
   import BoardStatus._
 
   type Player = Char
@@ -51,7 +51,7 @@ object TicTackToe {
 }
 
 case class Cell(value: Char){
-  import TicTackToe._
+  import TicTacToe._
 
   def isEmpty(): Boolean = {
     value.equals(NoPlayer)
@@ -63,7 +63,7 @@ case class Cell(value: Char){
 }
 
 object Board {
-  import TicTackToe._
+  import TicTacToe._
 
   def apply(): Board ={
     new Board(Array.fill[Cell](9)(Cell(NoPlayer)))
@@ -71,7 +71,7 @@ object Board {
 }
 
 class Board(cells: Array[Cell]) {
-  import TicTackToe._
+  import TicTacToe._
   val WinningCombinations = List((0,1,2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8), (2,4,6), (0,4,8))
 
   def place(value: Char, move: Int): Unit = {

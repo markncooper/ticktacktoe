@@ -1,7 +1,7 @@
 import org.scalatest.{Matchers, WordSpec}
 
 class EverythingSpec extends WordSpec with Matchers{
-  import TicTackToe._
+  import TicTacToe._
 
   "A board with three computer player spots in a row" should {
     val boardCells = Array.fill[Cell](9)(Cell(NoPlayer))

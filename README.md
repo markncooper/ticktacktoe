@@ -4,4 +4,8 @@ Clone this repo.
 
 Run:
 
-> mvn exec:java -Dexec.mainClass="TicTacToe"
+> mvn compile exec:java -Dexec.mainClass="TicTacToe"
+
+Or to run tests:
+
+> mvn test
