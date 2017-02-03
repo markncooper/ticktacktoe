@@ -183,8 +183,8 @@ class Board(cells: Array[Cell]) {
 
   def getMoveError(moveStr: String): Option[String] = {
     try {
-      val move = moveStr.toInt
-      if (move < 1 || move > 9){
+      val move = moveStr.toInt - 1
+      if (move < 0 || move > 8){
         Some("Move must be 1 through 9!")
       } else if (!isFree(move)){
         Some("Spot contains a move!")
